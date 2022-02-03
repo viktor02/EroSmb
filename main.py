@@ -17,17 +17,16 @@ args = parser.parse_args()
 if args.debug:
     logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
 else:
-    logging.basicConfig(encoding='utf-8', level=logging.WARNING)
+    logging.basicConfig(encoding='utf-8', level=logging.WARNING, format="%(asctime)s %(message)s")
 
 
 def banner():
-    logo = "=" * 40
-    logo += "\n NetFilth - SMB and Common Port Scanner \n"
-    logo += "=" * 40
+    logo = open("logo.txt").read()
+    logo += "\n\nSmb and Port scanner\n"
     print(logo)
 
 
-def common_scan(ip) -> list:
+def common_scan(ip):
     smb_scanner = SMBScanner.SMBScanner(ip)
     smb_info = smb_scanner.scan()
 
