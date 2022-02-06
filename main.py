@@ -1,7 +1,7 @@
 import argparse
 import logging
 import ipaddress
-from multiprocessing import Process, freeze_support
+import threading
 
 import SMBScanner
 from PortScanner import PortScanner
@@ -36,13 +36,22 @@ def common_scan(ip):
 
 def main():
     banner()
+    threads = []
     for ip in ipaddress.IPv4Network(args.target):
         if args.nothreads:
             common_scan(ip.compressed)
         else:
-            Process(target=common_scan, args=(ip.compressed,)).start()
+            thread = threading.Thread(target=common_scan, args=(ip.compressed,))
+
+            thread.start()
+            threads.append(thread)
+
+    for thread in threads:
+        thread.join()
 
 
 if __name__ == "__main__":
-    freeze_support()
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass

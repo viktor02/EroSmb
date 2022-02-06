@@ -50,8 +50,6 @@ class SMBScanner:
 
             dce.disconnect()
         except Exception as e:
-            # import traceback
-            # traceback.print_exc()
             logging.error('%s: %s' % (self.target_ip, str(e)))
 
     def get_info(self):
@@ -82,5 +80,28 @@ class SMBScanner:
                     "remote_host": remote_host
                 }
                 targets_info.append(target)
+
+                if "2600" in server_os: server_os += " (Windows XP)"
+                if "3790" in server_os: server_os += " (Windows XP Professional x64 Edition)"
+                if "2715" in server_os: server_os += " (Windows XP Media Center Edition 2006)"
+                if "6002" in server_os: server_os += " (Windows Vista)"
+                if "7601" in server_os: server_os += " (Windows 7)"
+                if "9200" in server_os: server_os += " (Windows 8)"
+                if "9600" in server_os: server_os += " (Windows 8.1)"
+                if "10240" in server_os: server_os += " (Windows 10 NT10.0)"
+                if "10586" in server_os: server_os += " (Windows 10 1511)"
+                if "14393" in server_os: server_os += " (Windows 10 1607)"
+                if "15063" in server_os: server_os += " (Windows 10 1703)"
+                if "16299" in server_os: server_os += " (Windows 10 1709)"
+                if "16299" in server_os: server_os += " (Windows 10 1709)"
+                if "17134" in server_os: server_os += " (Windows 10 1803)"
+                if "18362" in server_os: server_os += " (Windows 10 1903)"
+                if "18363" in server_os: server_os += " (Windows 10 1909)"
+                if "19041" in server_os: server_os += " (Windows 10 2004)"
+                if "19042" in server_os: server_os += " (Windows 10 20H2)"
+                if "19043" in server_os: server_os += " (Windows 10 21H1)"
+                if "19044" in server_os: server_os += " (Windows 10 21H2)"
+                if "22000" in server_os: server_os += " (Windows 11 21H2)"
+
                 print(f"[{remote_host}] {server_os} {server_arch} [{server_domain}\\\\{server_name}]")
         return targets_info
