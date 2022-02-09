@@ -5,7 +5,7 @@ from impacket.dcerpc.v5.epm import MSRPC_UUID_PORTMAP
 from impacket.dcerpc.v5.rpcrt import DCERPCException
 from impacket.dcerpc.v5.transport import DCERPCTransportFactory
 from impacket.smbconnection import SMBConnection
-
+from colorama import Fore
 
 class SMBScanner:
     def __init__(self, target_ip):
@@ -103,5 +103,5 @@ class SMBScanner:
                 if "19044" in server_os: server_os += " (Windows 10 21H2)"
                 if "22000" in server_os: server_os += " (Windows 11 21H2)"
 
-                print(f"[{remote_host}] {server_os} {server_arch} [{server_domain}\\\\{server_name}]")
+                print(f"* {Fore.GREEN}[{remote_host}]{Fore.RESET} {server_os} {Fore.YELLOW}{server_arch}{Fore.RESET} [{Fore.CYAN}{server_domain}\\\\{server_name}{Fore.RESET}]")
         return targets_info

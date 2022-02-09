@@ -5,10 +5,13 @@ import threading
 
 import SMBScanner
 from PortScanner import PortScanner
+from colorama import init, Fore, Style
 
 parser = argparse.ArgumentParser(description='Enumerate Windows machines in network.')
 parser.add_argument("target", help="Target IPs. May be range 192.168.0.0/24 or single ip")
 parser.add_argument("-d", "--debug", default=False, action="store_true", help="Print debug information")
+parser.add_argument("-sP", "--portscan", default=False, action="store_true", help="Scan popular ports")
+parser.add_argument("-t", "--timeout", default=0.1, type=float, help="Timeout in sec before port is closed")
 
 parser.add_argument("--nothreads", help="Run in single process")
 
@@ -30,12 +33,16 @@ def common_scan(ip):
     smb_scanner = SMBScanner.SMBScanner(ip)
     smb_info = smb_scanner.scan()
 
-    port_scanner = PortScanner(ip)
-    ports = port_scanner.scan()
+    if args.portscan:
+        port_scanner = PortScanner(ip, args.timeout)
+        ports = port_scanner.scan()
 
 
 def main():
+    init()
+    print(Fore.MAGENTA)
     banner()
+    print(Style.RESET_ALL)
     threads = []
     for ip in ipaddress.IPv4Network(args.target):
         if args.nothreads:
