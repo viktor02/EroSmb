@@ -1,0 +1,9 @@
+impacket
+pyasn1
+six
+ldap3
+ldapdomaindump
+chardet
+cryptography
+setuptools
+colorama
