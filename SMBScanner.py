@@ -101,7 +101,7 @@ class SMBScanner:
                 if "19044" in server_os: server_os += " (Windows 10 21H2)"
                 if "22000" in server_os: server_os += " (Windows 11 21H2)"
 
-                answer = f"* {Fore.GREEN}[{remote_host}]{Fore.RESET} {server_os} {Fore.YELLOW}{server_arch}{Fore.RESET} " \
+                answer = f"{Fore.GREEN}[{remote_host}]{Fore.RESET} {server_os} {Fore.YELLOW}{server_arch}{Fore.RESET} " \
                          f"[{Fore.CYAN}{server_domain}\\\\{server_name}{Fore.RESET}]"
 
                 if verbose:
