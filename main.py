@@ -9,18 +9,20 @@ from colorama import init, Fore, Style
 
 parser = argparse.ArgumentParser(description='Enumerate Windows machines in network.')
 parser.add_argument("target", help="Target IPs. May be range 192.168.0.0/24 or single ip")
-parser.add_argument("-d", "--debug", default=False, action="store_true", help="Print debug information")
+parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Print warnings")
+parser.add_argument("-d", "-vv", "--debug", default=False, action="store_true", help="Print debug information")
 parser.add_argument("-sP", "--portscan", default=False, action="store_true", help="Scan popular ports")
-parser.add_argument("-t", "--timeout", default=0.1, type=float, help="Timeout in sec before port is closed")
-
-parser.add_argument("--nothreads", help="Run in single process")
+parser.add_argument("-t", "--timeout", default=0.1, type=float, help="Timeout before deciding to mark a port as closed")
+parser.add_argument("--nothreads", default=False, action="store_true", help="Do not use multithreading")
 
 args = parser.parse_args()
 
 if args.debug:
     logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
-else:
+if args.verbose:
     logging.basicConfig(encoding='utf-8', level=logging.WARNING, format="%(asctime)s %(message)s")
+else:
+    logging.basicConfig(encoding='utf-8', level=logging.ERROR, format="%(asctime)s %(message)s")
 
 
 def banner():
