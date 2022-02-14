@@ -8,7 +8,7 @@ from colorama import Fore
 class PortScanner:
     def __init__(self, ip, timeout=0.1):
         self.ip = ip
-        self.ports = (21, 22, 80, 139, 443, 445, 8080)
+        self.ports = (21, 22, 80, 139, 443, 445, 3389, 8080)
         self.timeout = timeout
 
     def scan(self) -> list:

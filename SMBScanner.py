@@ -58,29 +58,26 @@ class SMBScanner:
         server_domain = self.conn.getServerDomain()
         server_name = self.conn.getServerName()
         server_os = self.conn.getServerOS()
+        server_os_major = self.conn.getServerOSMajor()
         dns_hostname = self.conn.getServerDNSHostName()
         remote_host = self.conn.getRemoteHost()
-        arch = self.get_arch()
+        is_login_required = self.conn.isLoginRequired()
+        credentials = self.conn.getCredentials()
+        server_arch = self.get_arch()
 
-        return dialect, server_domain, server_name, server_os, arch, dns_hostname, remote_host
+        return dialect, server_domain, server_name, server_os, server_os_major, server_arch, dns_hostname, \
+               remote_host, is_login_required, credentials
 
-    def scan(self) -> list:
+    def scan(self, verbose=False) -> list:
         targets_info = list()
         for port in self.ports:
             logging.info(f"Trying port {port} @ {self.target_ip}")
             if self.connect(port):
                 self.login()
-                dialect, server_domain, server_name, server_os, server_arch, dns_hostname, remote_host = self.get_info()
-                target = {
-                    "dialect": dialect,
-                    "server_domain": server_domain,
-                    "server_name": server_name,
-                    "server_os": server_os,
-                    "server_arch": server_arch,
-                    "dns_hostname": dns_hostname,
-                    "remote_host": remote_host
-                }
-                targets_info.append(target)
+                dialect, server_domain, server_name, server_os, server_os_major, server_arch, dns_hostname, \
+                remote_host, is_login_required, credentials = self.get_info()
+
+                targets_info.append(remote_host)
 
                 if "2600" in server_os: server_os += " (Windows XP)"
                 if "3790" in server_os: server_os += " (Windows XP Professional x64 Edition)"
@@ -104,7 +101,12 @@ class SMBScanner:
                 if "19044" in server_os: server_os += " (Windows 10 21H2)"
                 if "22000" in server_os: server_os += " (Windows 11 21H2)"
 
-                print(
-                    f"* {Fore.GREEN}[{remote_host}]{Fore.RESET} {server_os} {Fore.YELLOW}{server_arch}{Fore.RESET} "
-                    f"[{Fore.CYAN}{server_domain}\\\\{server_name}{Fore.RESET}]")
+                answer = f"* {Fore.GREEN}[{remote_host}]{Fore.RESET} {server_os} {Fore.YELLOW}{server_arch}{Fore.RESET} " \
+                         f"[{Fore.CYAN}{server_domain}\\\\{server_name}{Fore.RESET}]"
+
+                if verbose:
+                    print(answer, Fore.GREEN, "DNS:", dns_hostname, "IsLoginReq:", is_login_required,
+                          Fore.RESET)
+                else:
+                    print(answer)
         return targets_info
