@@ -1,7 +1,7 @@
 EroSmb
 ============
 
-.. figure:: img/logo.png
+.. figure:: https://raw.githubusercontent.com/viktor02/EroSmb/master/img/logo.png
 
 EroSmb is a fast smb network scanner. You can easily enumerate windows machines in your local network using this tool.
 
@@ -14,12 +14,19 @@ Also it can scan common ports :)
 Installation
 ------------
 
-#. Install from Pypi ::
-    pip install erosmb
+- Install from Pypi 
 
-#. From sources
-    Clone the repository and run ::
-		pip install .
+Run ::
+
+  pip install erosmb
+
+
+- From sources
+
+Clone the repository and run ::
+
+  pip install .
+
 
 FAQ
 ------------
@@ -33,5 +40,6 @@ Nmap OS Detection sends special packets to the tcp/ip stack and parses the respo
 This is universal, but unreliable and slow. 
 
     - Can I scan entire Internet?
+
 No, because on every IP address programs make a new thread and you just might not have enough memory and processor time. 
 Also scanning other people's networks without permission may be illegal in your country.
