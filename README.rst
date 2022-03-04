@@ -1,0 +1,37 @@
+EroSmb
+============
+
+.. figure:: img/logo.png
+
+EroSmb is a fast smb network scanner. You can easily enumerate windows machines in your local network using this tool.
+
+What is it
+------------
+This program shows you which machines are currently online in your network, their OS version, arch and IP. 
+
+Also it can scan common ports :)
+
+Installation
+------------
+
+#. Install from Pypi ::
+    pip install erosmb
+
+#. From sources
+    Clone the repository and run ::
+		pip install .
+
+FAQ
+------------
+    - Why do I need this utility if metasploit/smb_version and nmap already exists?
+
+Metasploit smb_version makes ping requests and if the target does not respond to them 
+(and in Windows this is the *standard firewall policy*) 
+skips and does not scan the target.
+
+Nmap OS Detection sends special packets to the tcp/ip stack and parses the response for matches. 
+This is universal, but unreliable and slow. 
+
+    - Can I scan entire Internet?
+No, because on every IP address programs make a new thread and you just might not have enough memory and processor time. 
+Also scanning other people's networks without permission may be illegal in your country.

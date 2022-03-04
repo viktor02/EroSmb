@@ -3,8 +3,8 @@ import logging
 import ipaddress
 import threading
 
-import SMBScanner
-from PortScanner import PortScanner
+import erosmb.SMBScanner
+from erosmb.PortScanner import PortScanner
 from colorama import init, Fore, Style
 
 parser = argparse.ArgumentParser(description='Enumerate Windows machines in network.')
@@ -26,7 +26,14 @@ else:
 
 
 def banner():
-    logo = open("logo.txt").read()
+    logo = """\
+eeeeee            ssssssss
+ee                ss                b
+eeeeee rrrr  ooo  ssssssss  mm  mm  bbbb
+ee     rr   o   o       ss  m mm m  b  bb
+eeeeee r     ooo  ssssssss  m    m  bbbb
+________________________________________
+"""
     logo += "\n\nSmb and Port scanner\n"
     print(logo)
 

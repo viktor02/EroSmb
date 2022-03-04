@@ -19,10 +19,9 @@ class PortScanner:
                 sock.settimeout(self.timeout)
                 result = sock.connect_ex((self.ip, port))
                 if result == 0:
-                    logging.info(f"Port {port} @ {self.ip} is open")
+                    print(f"{Fore.GREEN}[{self.ip}]{Fore.RESET} Port {Fore.LIGHTBLUE_EX}{port}{Fore.RESET} is open")
                     open_ports.append(port)
                 sock.close()
-            print(f"{Fore.GREEN}[{self.ip}]{Fore.RESET} Open ports: {Fore.LIGHTBLUE_EX}{open_ports}{Fore.RESET}")
 
         except KeyboardInterrupt:
             logging.warning("Stopping by user")

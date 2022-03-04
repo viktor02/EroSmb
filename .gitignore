@@ -1,6 +1,7 @@
-Exploits/
 impacket/
 ./venv
 *__pycache__*/
 .idea/
 .gitignore
+dist/
+*egg-info
