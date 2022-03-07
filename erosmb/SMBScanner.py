@@ -69,7 +69,6 @@ class SMBScanner:
                remote_host, is_login_required, credentials
 
     def scan(self, verbose=False) -> list:
-        targets_info = list()
         for port in self.ports:
             logging.info(f"Trying port {port} @ {self.target_ip}")
             if self.connect(port):
@@ -77,7 +76,6 @@ class SMBScanner:
                 dialect, server_domain, server_name, server_os, server_os_major, server_arch, dns_hostname, \
                 remote_host, is_login_required, credentials = self.get_info()
 
-                targets_info.append(remote_host)
 
                 if "2600" in server_os: server_os += " (Windows XP)"
                 if "3790" in server_os: server_os += " (Windows XP Professional x64 Edition)"
@@ -109,4 +107,6 @@ class SMBScanner:
                           Fore.RESET)
                 else:
                     print(answer)
-        return targets_info
+
+                return [remote_host, server_os, server_arch, server_name]
+        return []
