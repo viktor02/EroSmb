@@ -5,7 +5,6 @@ from impacket.dcerpc.v5.epm import MSRPC_UUID_PORTMAP
 from impacket.dcerpc.v5.rpcrt import DCERPCException
 from impacket.dcerpc.v5.transport import DCERPCTransportFactory
 from impacket.smbconnection import SMBConnection
-from colorama import Fore
 
 
 class SMBScanner:
@@ -68,7 +67,7 @@ class SMBScanner:
         return dialect, server_domain, server_name, server_os, server_os_major, server_arch, dns_hostname, \
                remote_host, is_login_required, credentials
 
-    def scan(self, verbose=False) -> list:
+    def scan(self) -> dict:
         for port in self.ports:
             logging.info(f"Trying port {port} @ {self.target_ip}")
             if self.connect(port):
@@ -99,14 +98,13 @@ class SMBScanner:
                 if "19044" in server_os: server_os += " (Windows 10 21H2)"
                 if "22000" in server_os: server_os += " (Windows 11 21H2)"
 
-                answer = f"{Fore.GREEN}[{remote_host}]{Fore.RESET} {server_os} {Fore.YELLOW}{server_arch}{Fore.RESET} " \
-                         f"[{Fore.CYAN}{server_domain}\\\\{server_name}{Fore.RESET}]"
-
-                if verbose:
-                    print(answer, Fore.GREEN, "DNS:", dns_hostname, "IsLoginReq:", is_login_required,
-                          Fore.RESET)
-                else:
-                    print(answer)
-
-                return [remote_host, server_os, server_arch, server_name]
-        return []
+                return {
+                    "host": remote_host,
+                    "os": server_os,
+                    "arch": server_arch,
+                    "domain": server_domain,
+                    "name": server_name,
+                    "dns_hostname": dns_hostname,
+                    "is_login_required": is_login_required
+                }
+        return {}
