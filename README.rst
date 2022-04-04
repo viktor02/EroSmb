@@ -7,9 +7,8 @@ EroSmb is a fast smb network scanner. You can easily enumerate windows machines 
 
 What is it
 ------------
-This program shows you which machines are currently online in your network, their OS version, arch and IP. 
+This program shows you which machines are currently online in your network, their OS version, arch and IP.
 
-Also it can scan common ports :)
 
 Installation
 ------------

@@ -94,7 +94,7 @@ def main():
 
     if args.sort:
         m = list(machines)
-        m.sort(key=lambda e: e['os'])
+        m.sort(key=lambda e: e['os'], reverse=True)
         for smb_info in m:
             print_info(smb_info)
 
