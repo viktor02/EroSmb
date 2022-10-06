@@ -20,11 +20,11 @@ parser.add_argument("-s", "--sort", default=False, action="store_true", help="So
 args = parser.parse_args()
 
 if args.debug:
-    logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG)
 if args.verbose:
-    logging.basicConfig(encoding='utf-8', level=logging.WARNING)
+    logging.basicConfig(level=logging.WARNING)
 else:
-    logging.basicConfig(encoding='utf-8', level=logging.ERROR)
+    logging.basicConfig(level=logging.ERROR)
 
 
 def banner():
