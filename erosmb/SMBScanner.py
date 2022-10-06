@@ -24,11 +24,13 @@ class SMBScanner:
             return False
 
     def login(self, login="anonymous", password="anonymous", domain='LANPARTY', lmhash='', nthash=''):
+        logged_in = False
         try:
             self.conn.negotiateSession()
-            self.conn.login(login, password, domain, lmhash, nthash)
+            logged_in = self.conn.login(login, password, domain, lmhash, nthash)
         except impacket.smbconnection.SessionError as e:
             logging.warning(e)
+        return logged_in
 
     def get_arch(self):
         try:
@@ -67,36 +69,38 @@ class SMBScanner:
         return dialect, server_domain, server_name, server_os, server_os_major, server_arch, dns_hostname, \
                remote_host, is_login_required, credentials
 
-    def scan(self) -> dict:
+    def scan(self, username, password, domain) -> dict:
         for port in self.ports:
             logging.info(f"Trying port {port} @ {self.target_ip}")
             if self.connect(port):
-                self.login()
+                logged_in = self.login(username, password, domain)
+
                 dialect, server_domain, server_name, server_os, server_os_major, server_arch, dns_hostname, \
                 remote_host, is_login_required, credentials = self.get_info()
 
+                os_versions = {"2600": "Windows XP",
+                               "3790": "Windows XP Professional x64 Edition",
+                               "2715": "Windows XP Media Center Edition 2006",
+                               "6002": "Windows Vista",
+                               "7601": "Windows 7",
+                               "9200": "Windows 8",
+                               "9600": "Windows 8.1",
+                               "10240": "Windows 10 NT10.0",
+                               "10586": "Windows 10 1511",
+                               "15063": "Windows 10 1703",
+                               "16299": "Windows 10 1709",
+                               "17134": "Windows 10 1803",
+                               "18362": "Windows 10 1903",
+                               "18363": "Windows 10 1909",
+                               "19041": "Windows 10 2004",
+                               "19042": "Windows 10 20H2",
+                               "19043": "Windows 10 21H1",
+                               "19044": "Windows 10 21H2",
+                               "22000": "Windows 11 21H2"}
 
-                if "2600" in server_os: server_os += " (Windows XP)"
-                if "3790" in server_os: server_os += " (Windows XP Professional x64 Edition)"
-                if "2715" in server_os: server_os += " (Windows XP Media Center Edition 2006)"
-                if "6002" in server_os: server_os += " (Windows Vista)"
-                if "7601" in server_os: server_os += " (Windows 7)"
-                if "9200" in server_os: server_os += " (Windows 8)"
-                if "9600" in server_os: server_os += " (Windows 8.1)"
-                if "10240" in server_os: server_os += " (Windows 10 NT10.0)"
-                if "10586" in server_os: server_os += " (Windows 10 1511)"
-                if "14393" in server_os: server_os += " (Windows 10 1607)"
-                if "15063" in server_os: server_os += " (Windows 10 1703)"
-                if "16299" in server_os: server_os += " (Windows 10 1709)"
-                if "16299" in server_os: server_os += " (Windows 10 1709)"
-                if "17134" in server_os: server_os += " (Windows 10 1803)"
-                if "18362" in server_os: server_os += " (Windows 10 1903)"
-                if "18363" in server_os: server_os += " (Windows 10 1909)"
-                if "19041" in server_os: server_os += " (Windows 10 2004)"
-                if "19042" in server_os: server_os += " (Windows 10 20H2)"
-                if "19043" in server_os: server_os += " (Windows 10 21H1)"
-                if "19044" in server_os: server_os += " (Windows 10 21H2)"
-                if "22000" in server_os: server_os += " (Windows 11 21H2)"
+                for osv in os_versions.keys():
+                    if osv in server_os:
+                        server_os = "{} ({})".format(os_versions[osv], server_os)
 
                 return {
                     "host": remote_host,
@@ -105,6 +109,7 @@ class SMBScanner:
                     "domain": server_domain,
                     "name": server_name,
                     "dns_hostname": dns_hostname,
-                    "is_login_required": is_login_required
+                    "is_login_required": is_login_required,
+                    "logged_in": logged_in
                 }
         return {}

@@ -8,14 +8,17 @@ from colorama import init, Fore, Style
 
 parser = argparse.ArgumentParser(description='Enumerate Windows machines in network.')
 
-parser.add_argument("target", help="Target IPs. May be range 192.168.0.0/24 or single ip")
-parser.add_argument("-v", "--verbose", default=False, action="store_true", help="Print warnings")
-parser.add_argument("-vv", "-d", "--debug", default=False, action="store_true", help="Print debug information")
-parser.add_argument("-t", "--timeout", default=0.1, type=float, help="Timeout before deciding to mark a port as closed")
-parser.add_argument("--nothreads", default=False, action="store_true", help="Do not use multithreading")
-parser.add_argument("-o", "--output", default=False, type=str, help="File to output list of machines")
-parser.add_argument("--nologo", default=False, action="store_true", help="Do not display logo")
-parser.add_argument("-s", "--sort", default=False, action="store_true", help="Sort by kernel version")
+parser.add_argument("target", help="target IPs. May be range 192.168.0.0/24 or single ip")
+parser.add_argument("-v", "--verbose", default=False, action="store_true", help="print warnings")
+parser.add_argument("-vv", "-d", "--debug", default=False, action="store_true", help="print debug information")
+parser.add_argument("-t", "--timeout", default=0.1, type=float, help="timeout before deciding to mark a port as closed")
+parser.add_argument("-o", "--output", default=False, type=str, help="file to output list of machines")
+parser.add_argument("-s", "--sort", default=False, action="store_true", help="sort by kernel version")
+parser.add_argument("--username", default="anonymous")
+parser.add_argument("--password", default="anonymous", help="password for username")
+parser.add_argument("--domain", default="LANPARTY", help="domain for username")
+parser.add_argument("--nologo", default=False, action="store_true", help="do not display logo")
+parser.add_argument("--nothreads", default=False, action="store_true", help="do not use multithreading")
 
 args = parser.parse_args()
 
@@ -47,7 +50,7 @@ machines = []
 
 def common_scan(ip):
     smb_scanner = SMBScanner(ip)
-    smb_info = smb_scanner.scan()
+    smb_info = smb_scanner.scan(args.username, args.password, args.domain)
 
     if 'host' in smb_info:
         # output immediately, if we don't need sorting
@@ -61,6 +64,9 @@ def print_info(smb_info):
     answer = f"{Fore.GREEN}[{smb_info['host']}]{Fore.RESET} " \
              f"{smb_info['os']} {Fore.YELLOW}{smb_info['arch']}{Fore.RESET} " \
              f"[{Fore.CYAN}{smb_info['domain']}\\\\{smb_info['name']}{Fore.RESET}]"
+
+    if smb_info["logged_in"]:
+        answer += f" {Fore.RED}Logged in as {args.username}{Fore.RESET}"
 
     if args.verbose:
         print(answer,
