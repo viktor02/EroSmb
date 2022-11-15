@@ -6,6 +6,8 @@ import threading
 from erosmb.SMBScanner import SMBScanner
 from colorama import init, Fore, Style
 
+__version__ = "0.1.4"
+
 parser = argparse.ArgumentParser(description='Enumerate Windows machines in network.')
 
 parser.add_argument("target", help="target IPs. May be range 192.168.0.0/24 or single ip")
@@ -14,6 +16,7 @@ parser.add_argument("-vv", "-d", "--debug", default=False, action="store_true", 
 parser.add_argument("-t", "--timeout", default=0.1, type=float, help="timeout before deciding to mark a port as closed")
 parser.add_argument("-o", "--output", default=False, type=str, help="file to output list of machines")
 parser.add_argument("-s", "--sort", default=False, action="store_true", help="sort by kernel version")
+parser.add_argument('-V', '--version', action='version', version=__version__)
 parser.add_argument("--username", default="anonymous")
 parser.add_argument("--password", default="anonymous", help="password for username")
 parser.add_argument("--domain", default="LANPARTY", help="domain for username")
@@ -61,7 +64,7 @@ def common_scan(ip):
 
 
 def print_info(smb_info):
-    answer = f"{Fore.GREEN}[{smb_info['host']}]{Fore.RESET} " \
+    answer = f"{Fore.GREEN}[{smb_info['host']:^15}]{Fore.RESET} " \
              f"{smb_info['os']} {Fore.YELLOW}{smb_info['arch']}{Fore.RESET} " \
              f"[{Fore.CYAN}{smb_info['domain']}\\\\{smb_info['name']}{Fore.RESET}]"
 
