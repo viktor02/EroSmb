@@ -25,13 +25,18 @@ parser.add_argument("--nothreads", default=False, action="store_true", help="do 
 
 args = parser.parse_args()
 
-if args.debug:
-    logging.basicConfig(level=logging.DEBUG)
-if args.verbose:
-    logging.basicConfig(level=logging.WARNING)
-else:
-    logging.basicConfig(level=logging.ERROR)
+log = logging.getLogger()
+formatter = logging.Formatter('[%(levelname)s] %(name)s - %(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+log.addHandler(handler)
 
+if args.debug:
+    log.setLevel(logging.DEBUG)
+if args.verbose:
+    log.setLevel(logging.WARNING)
+else:
+    log.setLevel(logging.ERROR)
 
 def banner():
     logo = """\
@@ -115,7 +120,11 @@ def main():
             print("Written to file", f.name)
             f.close()
         except FileNotFoundError:
-            logging.error("Error writing to file: bad filename")
+            log.error("Error writing to file: bad filename")
+        except PermissionError:
+            log.error("Error writing to file: not enough permissions.")
+        except Exception as e:
+            log.error(e)
 
 
 if __name__ == "__main__":

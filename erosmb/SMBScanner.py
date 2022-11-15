@@ -12,6 +12,8 @@ class SMBScanner:
         self.conn = None
         self.target_ip = target_ip
         self.ports = [139, 445]
+        self.logger = logging.getLogger('erosmb.SMB')
+        self.logger.propagate = False
 
     def connect(self, port) -> bool:
         try:
@@ -20,7 +22,7 @@ class SMBScanner:
                                       timeout=4, preferredDialect=None)
             return True
         except Exception as e:
-            logging.info(e)
+            self.logger.info(e)
             return False
 
     def login(self, login="anonymous", password="anonymous", domain='LANPARTY', lmhash='', nthash=''):
@@ -29,7 +31,7 @@ class SMBScanner:
             self.conn.negotiateSession()
             logged_in = self.conn.login(login, password, domain, lmhash, nthash)
         except impacket.smbconnection.SessionError as e:
-            logging.warning(e)
+            self.logger.warning(e)
         return logged_in
 
     def get_arch(self):
@@ -45,14 +47,14 @@ class SMBScanner:
                 if str(e).find('syntaxes_not_supported') >= 0:
                     return "32-bit"
                 else:
-                    logging.error(str(e))
+                    self.logger.error(str(e))
                     pass
             else:
                 return "64-bit"
 
             dce.disconnect()
         except Exception as e:
-            logging.error('%s: %s' % (self.target_ip, str(e)))
+            self.logger.error('%s: %s' % (self.target_ip, str(e)))
 
     def get_info(self):
         dialect = self.conn.getDialect()
@@ -71,7 +73,7 @@ class SMBScanner:
 
     def scan(self, username, password, domain) -> dict:
         for port in self.ports:
-            logging.info(f"Trying port {port} @ {self.target_ip}")
+            self.logger.info(f"Trying port {port} @ {self.target_ip}")
             if self.connect(port):
                 logged_in = self.login(username, password, domain)
 
