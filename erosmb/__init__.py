@@ -41,9 +41,7 @@ log.addHandler(handler)
 
 
 def banner():
-    print(Fore.MAGENTA)
-    print("EroSmb - enumerate Windows machines in your network")
-    print(Style.RESET_ALL)
+    print(f"{Fore.MAGENTA}EroSmb {__version__} | enumerate Windows machines in your network{Style.RESET_ALL}\n")
 
 
 machines = []

@@ -5,3 +5,4 @@ impacket/
 .gitignore
 dist/
 *egg-info
+build/
