@@ -69,9 +69,10 @@ def print_info(machine: Machine):
     if machine.logged_in:
         answer += f" {Fore.RED}Logged in as {args.username}{Fore.RESET}"
 
-    if args.verbose:
+    if args.verbose or args.debug:
         print(answer,
               Fore.GREEN, "DNS:", machine.dns_name, "IsLoginReq:", machine.is_login_req,
+              "SMBVer:", hex(machine.smb_dialect),
               Fore.RESET)
     else:
         print(answer)
