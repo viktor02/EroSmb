@@ -5,6 +5,13 @@ EroSmb
 
 EroSmb is a fast smb network scanner. You can easily enumerate windows machines in your local network using this tool.
 
+Disclaimer
+----------
+
+**Do not to use this product for any illegal purpose, otherwise you may be subject to prosecutions under applicable laws.**
+
+**Make sure you have permission to scan your network.**
+
 What is it
 ------------
 This program shows you which machines are currently online in your network, their OS version, arch and IP.
