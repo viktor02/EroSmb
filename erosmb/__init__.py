@@ -3,6 +3,7 @@ import logging
 import ipaddress
 import threading
 
+from erosmb.Machine import Machine
 from erosmb.SMBScanner import SMBScanner
 from colorama import init, Fore, Style
 
@@ -25,31 +26,23 @@ parser.add_argument("--nothreads", default=False, action="store_true", help="do 
 
 args = parser.parse_args()
 
-log = logging.getLogger()
-formatter = logging.Formatter('[%(levelname)s] %(name)s - %(message)s')
+if args.debug:
+    logging.root.setLevel(logging.INFO)
+elif args.verbose:
+    logging.root.setLevel(logging.WARNING)
+else:
+    logging.root.setLevel(logging.ERROR)
+
+log = logging.getLogger(__name__)
+formatter = logging.Formatter('%(levelname)s | %(name)s | %(message)s')
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 log.addHandler(handler)
 
-if args.debug:
-    log.setLevel(logging.DEBUG)
-if args.verbose:
-    log.setLevel(logging.WARNING)
-else:
-    log.setLevel(logging.ERROR)
 
 def banner():
-    logo = """\
-eeeeee            ssssssss
-ee                ss                b
-eeeeee rrrr  ooo  ssssssss  mm  mm  bbbb
-ee     rr   o   o       ss  m mm m  b  bb
-eeeeee r     ooo  ssssssss  m    m  bbbb
-________________________________________
-"""
-    logo += "\n\nSmb scanner\n"
     print(Fore.MAGENTA)
-    print(logo)
+    print("EroSmb - enumerate Windows machines in your network")
     print(Style.RESET_ALL)
 
 
@@ -58,27 +51,27 @@ machines = []
 
 def common_scan(ip):
     smb_scanner = SMBScanner(ip)
-    smb_info = smb_scanner.scan(args.username, args.password, args.domain)
+    machine = smb_scanner.scan(args.username, args.password, args.domain)
 
-    if 'host' in smb_info:
+    if machine is not None:
         # output immediately, if we don't need sorting
         if not args.sort:
-            print_info(smb_info)
+            print_info(machine)
 
-        machines.append(smb_info)
+        machines.append(machine)
 
 
-def print_info(smb_info):
-    answer = f"{Fore.GREEN}[{smb_info['host']:^15}]{Fore.RESET} " \
-             f"{smb_info['os']} {Fore.YELLOW}{smb_info['arch']}{Fore.RESET} " \
-             f"[{Fore.CYAN}{smb_info['domain']}\\\\{smb_info['name']}{Fore.RESET}]"
+def print_info(machine: Machine):
+    answer = f"{Fore.GREEN}[{machine.ip:^15}]{Fore.RESET} " \
+             f"{machine.os:<45} {Fore.YELLOW}{machine.arch}{Fore.RESET} " \
+             f"[{Fore.CYAN}{machine.domain}\\\\{machine.name}{Fore.RESET}]"
 
-    if smb_info["logged_in"]:
+    if machine.logged_in:
         answer += f" {Fore.RED}Logged in as {args.username}{Fore.RESET}"
 
     if args.verbose:
         print(answer,
-              Fore.GREEN, "DNS:", smb_info['dns_hostname'], "IsLoginReq:", smb_info['is_login_required'],
+              Fore.GREEN, "DNS:", machine.dns_name, "IsLoginReq:", machine.is_login_req,
               Fore.RESET)
     else:
         print(answer)
@@ -107,16 +100,16 @@ def main():
         print(f"Current online: {Fore.GREEN}{len(machines)}{Fore.RESET}")
 
     if args.sort:
-        m = list(machines)
-        m.sort(key=lambda e: e['os'], reverse=True)
-        for smb_info in m:
-            print_info(smb_info)
+        sorted_machines = list(machines)
+        sorted_machines.sort(key=lambda machine: machine.os, reverse=True)
+        for machine in sorted_machines:
+            print_info(machine)
 
     if args.output:
         try:
             f = open(args.output, "w", encoding='utf8')
             for machine in machines:
-                f.write(machine['host'] + "\n")
+                f.write(machine.ip + "\n")
             print("Written to file", f.name)
             f.close()
         except FileNotFoundError:
