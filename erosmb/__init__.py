@@ -60,19 +60,23 @@ def common_scan(ip):
 
 
 def print_info(machine: Machine):
-    answer = f"{Fore.GREEN}[{machine.ip:^15}]{Fore.RESET} " \
-             f"{machine.os:<45} {Fore.YELLOW}{machine.arch}{Fore.RESET} " \
-             f"[{Fore.CYAN}{machine.domain}\\\\{machine.name}{Fore.RESET}]"
+    try:
+        answer = f"{Fore.GREEN}[{machine.ip:^15}]{Fore.RESET} " \
+                 f"{machine.os:<45} {Fore.YELLOW}{machine.arch}{Fore.RESET} " \
+                 f"[{Fore.CYAN}{machine.domain}\\\\{machine.name}{Fore.RESET}]"
 
-    if machine.logged_in:
-        answer += f" {Fore.RED}Logged in as {args.username}{Fore.RESET}"
+        if machine.logged_in:
+            answer += f" {Fore.RED}Logged in as {args.username}{Fore.RESET}"
 
-    if args.verbose or args.debug:
-        print(answer,
-              Fore.GREEN, "DNS:", machine.dns_name, "IsLoginReq:", machine.is_login_req,
-              "SMBVer:", hex(machine.smb_dialect),
-              Fore.RESET)
-    else:
+        if args.verbose or args.debug:
+            print(answer,
+                  Fore.GREEN, "DNS:", machine.dns_name, "IsLoginReq:", machine.is_login_req,
+                  "SMBVer:", hex(machine.smb_dialect),
+                  Fore.RESET)
+        else:
+            print(answer)
+    except AttributeError:
+        answer = f"{Fore.RED}[{machine.ip:^15}]{Fore.RED} Error"
         print(answer)
 
 

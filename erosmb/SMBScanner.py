@@ -1,4 +1,5 @@
 import logging
+import struct
 
 import impacket.smb3structs
 from impacket.dcerpc.v5.epm import MSRPC_UUID_PORTMAP
@@ -20,6 +21,9 @@ class SMBScanner:
             self.conn = SMBConnection(remoteName=self.target_ip, remoteHost=self.target_ip, myName=None,
                                       sess_port=port,
                                       timeout=4, preferredDialect=None)
+            return True
+        except struct.error as e:
+            self.logger.warning(e)
             return True
         except Exception as e:
             self.logger.info(e)
@@ -98,8 +102,11 @@ class SMBScanner:
             self.logger.info(f"Trying port {port} @ {self.target_ip}")
             if self.connect(port):
                 self.logger.info(f"Connected to {self.target_ip}:{port}")
-                logged_in = self.login(username, password, domain)
-                machine = self.get_info()
-                machine.logged_in = logged_in
+                try:
+                    logged_in = self.login(username, password, domain)
+                    machine = self.get_info()
+                    machine.logged_in = logged_in
+                except AttributeError:
+                    machine = Machine(self.target_ip)
                 return machine
         return None

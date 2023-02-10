@@ -14,3 +14,11 @@ class Machine:
 
     def __init__(self, ip):
         self.ip = ip
+        self.os = ""
+        self.arch = ""
+        self.domain = ""
+        self.name = ""
+        self.dns_name = ""
+        self.is_login_req = False
+        self.logged_in = False
+        self.smb_dialect = 0x0
