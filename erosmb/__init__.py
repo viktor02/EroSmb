@@ -7,7 +7,7 @@ from erosmb.Machine import Machine
 from erosmb.SMBScanner import SMBScanner
 from colorama import init, Fore, Style
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 parser = argparse.ArgumentParser(description='Enumerate Windows machines in network.')
 

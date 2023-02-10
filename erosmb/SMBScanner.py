@@ -1,5 +1,6 @@
 import logging
 import struct
+from typing import Union
 
 import impacket.smb3structs
 from impacket.dcerpc.v5.epm import MSRPC_UUID_PORTMAP
@@ -97,7 +98,7 @@ class SMBScanner:
 
         return machine
 
-    def scan(self, username, password, domain) -> Machine | None:
+    def scan(self, username, password, domain) -> Union[Machine, None]:
         for port in self.ports:
             self.logger.info(f"Trying port {port} @ {self.target_ip}")
             if self.connect(port):
