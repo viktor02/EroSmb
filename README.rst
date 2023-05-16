@@ -45,6 +45,8 @@ skips and does not scan the target.
 Nmap OS Detection sends special packets to the tcp/ip stack and parses the response for matches. 
 This is universal, but unreliable and slow. 
 
+EroSmb only scan two ports (139 and 445) and if the connection is successful, it asks about the SMB protocol version of the server and the OS version. This is fast and reliable way. 
+
     - Can I scan entire Internet?
 
 No, because on every IP address programs make a new thread and you just might not have enough memory and processor time. 
